@@ -7,3 +7,5 @@ $routes = new Routing\RouteCollection();
 
 $routes->add('home', new Route('/'));
 $routes->add('bye', new Route('/bye'));
+
+return $routes;
