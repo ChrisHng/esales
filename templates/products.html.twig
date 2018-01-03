@@ -2,14 +2,15 @@
     <div id="portfolio" class="container">
 
         {% for product in products %}
-        <div id="column1">
+        <div id="column{{ (loop.index % 4) + 1 }}">
             <div class="title">
                 <h2>{{ product.title }}</h2>
             </div>
-            <a href="#" class="image image-full"><img src="images/pic02.jpg" alt="" /></a>
             <p>{{ product.description }}</p>
             <p>{{ product.price }} $</p>
-            <a href="#" class="icon icon-plus-sign button">Read More</a> </div>
+            <div class="icon icon-plus-sign button">{{ product.phone_no }}</div>
+
+        </div>
 
         {% endfor %}
     </div>

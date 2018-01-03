@@ -25,27 +25,34 @@ class Product {
     protected $description;
 
     /**
+     * The phone no of the owner of the product.
+     */
+    protected $phone_no;
+
+    /**
      * Product constructor.
      *
      * @param $title
      * @param $price
      * @param $description
      */
-    public function __construct($title = NULL, $price = NULL, $description = NULL)
+    public function __construct($title = NULL, $price = NULL, $description = NULL, $phone_no = NULL)
     {
         $this->title = $title;
         $this->price = $price;
         $this->description = $description;
+        $this->phone_no = $phone_no;
     }
 
     /**
      * Adds the entry to the database;
      */
     public function add() {
-        $stmt = DatabaseConnection::$connection->prepare("INSERT INTO products (title, price, description) VALUES (:title, :price, :description)");
+        $stmt = DatabaseConnection::$connection->prepare("INSERT INTO products (title, price, description, phone_no) VALUES (:title, :price, :description, :phone_no)");
         $stmt->bindParam(':title', $this->title);
         $stmt->bindParam(':price', $this->price);
         $stmt->bindParam(':description', $this->description);
+        $stmt->bindParam(':phone_no', $this->phone_no);
 
         $stmt->execute();
     }
@@ -115,5 +122,23 @@ class Product {
     public function getDescription() {
         return $this->description;
     }
-}
 
+    /**
+     * Sets the phone_no property of the entity.
+     *
+     * @param $description
+     */
+    public function setPhoneNo($phone_no) {
+        $this->phone_no = $phone_no;
+    }
+
+    /**
+     * Gets the phone_no property of the entity.
+     *
+     * @return mixed
+     */
+    public function getPhoneNo() {
+        return $this->phone_no;
+    }
+
+}
