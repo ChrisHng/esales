@@ -3,6 +3,7 @@
 // Manage class autoloading.
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use eSales\Model\DatabaseConnection;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,13 +22,21 @@ $argumentResolver = new HttpKernel\Controller\ArgumentResolver();
 try {
     $request->attributes->add($matcher->match($request->getPathInfo()));
 
+    // Connect to the database;
+    DatabaseConnection::connect();
+
+    // Get the controller and the arguments.
     $controller = $controllerResolver->getController($request);
     $argument = $argumentResolver->getArguments($request, $controller);
-
     $response = new Response();
 
-    $output = call_user_func($controller, $request);
+    // Call the asigned controller with the afferent arguments;
+    $output = call_user_func($controller, $argument);
     $response->setContent($output);
+
+    // Close the connection to the database;
+    DatabaseConnection::closeConnection();
+
 } catch (Routing\Exception\ResourceNotFoundException $e) {
     $response = new Response('Not Found', 404);
 } catch (Exception $e) {

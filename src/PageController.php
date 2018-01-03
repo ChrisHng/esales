@@ -2,14 +2,35 @@
 
 namespace eSales;
 
-use Symfony\Component\HttpFoundation\Request;
+use eSales\Model\Product;
+use Twig_Environment;
 
 class PageController {
-    
-    public static function content($page) {
-        $loader = new \Twig_Loader_Filesystem('../templates');
-        $twig = new \Twig_Environment($loader);
 
-        return $twig->render('home.html.twig');
+    /**
+     * @var Twig_Environment.
+     */
+    static $twig;
+
+    public static function content($page) {
+        self::setTwig();
+
+        switch ($page[0]) {
+            case '':
+                $output = self::$twig->render('layout/base.html.twig', ['page' => 'home']);
+                break;
+            case 'products':
+                $output = self::$twig->render('layout/base.html.twig', ['page' => 'products', 'products' => Product::getProducts()]);
+                break;
+
+            default:
+                $output = [];
+        }
+
+        return $output;
+    }
+
+    protected static function setTwig() {
+        self::$twig = include_once __DIR__.'/../src/bootstrap.php';
     }
 }

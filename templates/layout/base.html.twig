@@ -1,0 +1,21 @@
+{%  set base_url = 'http://esales.localhost:8000'  %}
+{% set site_name = 'eSales' %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="http://fonts.googleapis.com/css?family=Karla:400,700" rel="stylesheet" />
+    <link href="{{ base_url }}/assets/css/fonts.css" media="all" />
+    <link href="{{ base_url }}/assets/css/default.css" rel="stylesheet" type="text/css" media="all" />
+</head>
+
+<body>
+<div id="wrapper">
+    {% include 'layout/header.html.twig' %}
+    {% include 'layout/menu.html.twig' %}
+    {% include page ~ '.html.twig' %}
+    {% include 'layout/footer.html.twig' %}
+</div>
+
+</body>
+</html>
