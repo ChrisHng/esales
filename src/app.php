@@ -1,6 +1,7 @@
 <?php
 
-use eSales\PageController;
+use eSales\Controller\PageController;
+use eSales\Controller\ProductController;
 use Symfony\Component\Routing;
 use Symfony\Component\Routing\Route;
 

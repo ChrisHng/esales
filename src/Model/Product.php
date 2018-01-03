@@ -31,7 +31,7 @@ class Product {
      * @param $price
      * @param $description
      */
-    public function __construct($title, $price, $description)
+    public function __construct($title = NULL, $price = NULL, $description = NULL)
     {
         $this->title = $title;
         $this->price = $price;
@@ -59,6 +59,61 @@ class Product {
         $query = DatabaseConnection::$connection->query('SELECT * FROM products');
 
         return $query->fetchAll();
+    }
+
+
+    /**
+     * Sets the title property of the entity.
+     *
+     * @param $title
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+    }
+
+    /**
+     * Gets the title property of the entity.
+     *
+     * @return mixed
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+
+    /**
+     * Sets the price property of the entity.
+     *
+     * @param $price
+     */
+    public function setPrice($price) {
+        $this->price = $price;
+    }
+
+    /**
+     * Gets the price property of the entity.
+     *
+     * @return mixed
+     */
+    public function getPrice() {
+        return $this->price;
+    }
+
+    /**
+     * Sets the description property of the entity.
+     *
+     * @param $description
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+    }
+
+    /**
+     * Gets the description property of the entity.
+     *
+     * @return mixed
+     */
+    public function getDescription() {
+        return $this->description;
     }
 }
 

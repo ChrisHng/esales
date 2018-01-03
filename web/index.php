@@ -31,7 +31,7 @@ try {
     $response = new Response();
 
     // Call the asigned controller with the afferent arguments;
-    $output = call_user_func($controller, $argument);
+    $output = call_user_func_array($controller, $argument);
     $response->setContent($output);
 
     // Close the connection to the database;

@@ -1,6 +1,6 @@
 <?php
 
-namespace eSales;
+namespace eSales\Controller;
 
 use eSales\Model\Product;
 use Twig_Environment;
@@ -15,7 +15,7 @@ class PageController {
     public static function content($page) {
         self::setTwig();
 
-        switch ($page[0]) {
+        switch ($page) {
             case '':
                 $output = self::$twig->render('layout/base.html.twig', ['page' => 'home']);
                 break;
@@ -31,6 +31,6 @@ class PageController {
     }
 
     protected static function setTwig() {
-        self::$twig = include_once __DIR__.'/../src/bootstrap.php';
+        self::$twig = include_once __DIR__ . '/../../src/bootstrap.php';
     }
 }
