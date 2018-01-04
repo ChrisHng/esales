@@ -65,6 +65,10 @@ class Product {
     public static function getProducts() {
         $query = DatabaseConnection::$connection->query('SELECT * FROM products');
 
+        if (!$query) {
+          return [];
+        }
+
         return $query->fetchAll();
     }
 

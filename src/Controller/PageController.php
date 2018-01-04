@@ -20,7 +20,8 @@ class PageController {
                 $output = self::$twig->render('layout/base.html.twig', ['page' => 'home']);
                 break;
             case 'products':
-                $output = self::$twig->render('layout/base.html.twig', ['page' => 'products', 'products' => Product::getProducts()]);
+                $products = Product::getProducts();
+                $output = self::$twig->render('layout/base.html.twig', ['page' => 'products', 'products' => $products]);
                 break;
 
             default:
