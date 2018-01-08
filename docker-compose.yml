@@ -58,7 +58,7 @@ services:
     labels:
       traefik.backend: 'portainer'
       traefik.port: '9000'
-      traefik.frontend.rule: 'Host:portainer.mini-framework.localhost'
+      traefik.frontend.rule: 'Host:portainer.esales.localhost'
 
   traefik:
     image: traefik
