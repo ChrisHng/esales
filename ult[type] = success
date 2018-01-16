@@ -1,0 +1,294 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/composer.json b/composer.json[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/composer.lock b/composer.lock[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/dbBackup/esales.sql b/dbBackup/esales.sql[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/docker-compose.yml b/docker-compose.yml[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/src/Controller/PageController.php b/src/Controller/PageController.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mindex 6740c4c..24070c2[m
+[1m--- a/src/Controller/PageController.php[m
+[1m+++ b/src/Controller/PageController.php[m
+[36m@@ -18,17 +18,57 @@[m [mclass PageController {[m
+     public static function content($page, Request $request) {[m
+         self::setTwig();[m
+ [m
+[32m+[m[32m        session_start();[m
+[32m+[m[32m        $logged_in = [];[m
+[32m+[m
+[32m+[m[32m        if (isset($_SESSION['logged_in'])) {[m
+[32m+[m[32m            $logged_in = $_SESSION['logged_in'];[m
+[32m+[m[32m        }[m
+[32m+[m
+         switch ($page) {[m
+             case '':[m
+[31m-                $output = self::$twig->render('layout/base.html.twig', ['page' => 'home']);[m
+[32m+[m[32m                $data = [[m
+[32m+[m[32m                    'logged_in' => $logged_in,[m
+[32m+[m[32m                    'page' => 'home'[m
+[32m+[m[32m                ];[m
+[32m+[m[32m                $output = self::$twig->render('layout/base.html.twig', $data);[m
+                 break;[m
+             case 'products':[m
+                 $products = Product::getProducts();[m
+[31m-                $output = self::$twig->render('layout/base.html.twig', ['page' => 'products', 'products' => $products]);[m
+[32m+[m[32m                $data = [[m
+[32m+[m[32m                    'logged_in' => $logged_in,[m
+[32m+[m[32m                    'page' => 'products',[m
+[32m+[m[32m                    'products' => $products[m
+[32m+[m[32m                ];[m
+[32m+[m
+[32m+[m[32m                $output = self::$twig->render('layout/base.html.twig', $data);[m
+                 break;[m
+             case 'login':[m
+[31m-                self::connect_user($request);[m
+[31m-                return self::$twig->render('layout/base.html.twig', ['page' => 'login']);[m
+[32m+[m[32m                $logged_in = self::connect_user($request);[m
+[32m+[m[32m                $data = [[m
+[32m+[m[32m                    'logged_in' => $logged_in,[m
+[32m+[m[32m                    'page' => 'login'[m
+[32m+[m[32m                ];[m
+[32m+[m
+[32m+[m[32m                return self::$twig->render('layout/base.html.twig', $data);[m
+[32m+[m[32m                break;[m
+[32m+[m[32m            case 'register':[m
+[32m+[m[32m                $result = self::register_user($request);[m
+[32m+[m[32m                $data = [[m
+[32m+[m[32m                    'page' => 'register',[m
+[32m+[m[32m                    'result' => $result,[m
+[32m+[m[32m                ];[m
+[32m+[m[32m                return self::$twig->render('layout/base.html.twig', $data);[m
+[32m+[m[32m                break;[m
+[32m+[m
+[32m+[m[32m            case 'logout':[m
+[32m+[m[32m                $data = [[m
+[32m+[m[32m                    'logged_in' => false,[m
+[32m+[m[32m                    'page' => 'logout'[m
+[32m+[m[32m                ];[m
+[32m+[m[32m                session_destroy();[m
+[32m+[m[32m                return $output = self::$twig->render('layout/base.html.twig', $data);[m
+[32m+[m[32m                break;[m
+ [m
+             default:[m
+                 $output = [];[m
+[36m@@ -41,14 +81,45 @@[m [mclass PageController {[m
+         $username = $request->get('username');[m
+         $password = $request->get('password');[m
+ [m
+[31m-        if (User::checkLogin($username, $password)) {[m
+[31m-            $session = new Session();[m
+[31m-            $session->start();[m
+[31m-            $session->set('user', $username);[m
+[32m+[m[32m        if(isset($username) && isset($password)) {[m
+[32m+[m
+[32m+[m[32m            if (User::checkLogin($username, $password)) {[m
+[32m+[m[32m                $_SESSION['logged_in'] = $username;[m
+[32m+[m[32m                return true;[m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        return false;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    protected static function register_user(Request $request) {[m
+[32m+[m[32m        $username = $request->get('username');[m
+[32m+[m[32m        $password = $request->get('password');[m
+[32m+[m[32m        $passwordRepeat = $request->get('password_repeat');[m
+[32m+[m
+[32m+[m[32m        $result = [];[m
+[32m+[m
+[32m+[m[32m        if(isset($username) && isset($password) && isset($passwordRepeat)) {[m
+[32m+[m[32m            if($password != $passwordRepeat) {[m
+[32m+[m[32m                $result['type'] = 'error';[m
+[32m+[m[32m                $result['text'] = "The passwords do not match";[m
+[32m+[m[32m            }[m
+[32m+[m[32m            else {[m
+[32m+[m[32m                $user = new User($username, $password);[m
+[32m+[m[32m                $user->add();[m
+[32m+[m
+[32m+[m[32m                self::connect_user($request);[m
+[32m+[m
+[32m+[m[32m                $result['type'] = 'success';[m
+[32m+[m[32m                $result['text'] = "You have been successfully registered!";[m
+[32m+[m[32m            }[m
+         }[m
+[32m+[m
+[32m+[m[32m        return $result;[m
+     }[m
+ [m
+     protected static function setTwig() {[m
+         self::$twig = include_once __DIR__ . '/../../src/bootstrap.php';[m
+     }[m
+[32m+[m
+ }[m
+[1mdiff --git a/src/Model/DatabaseConnection.php b/src/Model/DatabaseConnection.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/src/Model/Product.php b/src/Model/Product.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/src/Model/User.php b/src/Model/User.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mindex aa81cf7..184bc1b[m
+[1m--- a/src/Model/User.php[m
+[1m+++ b/src/Model/User.php[m
+[36m@@ -20,6 +20,11 @@[m [mclass User {[m
+     protected $pwd;[m
+ [m
+     /**[m
+[32m+[m[32m     * The property of an user to be admin.[m
+[32m+[m[32m     */[m
+[32m+[m[32m    protected $isAdmin;[m
+[32m+[m
+[32m+[m[32m    /**[m
+      * User constructor.[m
+      *[m
+      * @param $username[m
+[36m@@ -35,7 +40,7 @@[m [mclass User {[m
+      * Adds the entry to the database;[m
+      */[m
+     public function add() {[m
+[31m-        $stmt = DatabaseConnection::$connection->prepare("INSERT INTO users (username, password) VALUES (:username, :password");[m
+[32m+[m[32m        $stmt = DatabaseConnection::$connection->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");[m
+         $stmt->bindParam(':username', $this->username);[m
+         $stmt->bindParam(':password', $this->pwd);[m
+ [m
+[1mdiff --git a/src/app.php b/src/app.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/src/bootstrap.php b/src/bootstrap.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/templates/home.html.twig b/templates/home.html.twig[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/templates/layout/base.html.twig b/templates/layout/base.html.twig[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/templates/layout/footer.html.twig b/templates/layout/footer.html.twig[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/templates/layout/header.html.twig b/templates/layout/header.html.twig[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/templates/layout/menu.html.twig b/templates/layout/menu.html.twig[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mindex 0a09baf..01ecaa6[m
+[1m--- a/templates/layout/menu.html.twig[m
+[1m+++ b/templates/layout/menu.html.twig[m
+[36m@@ -3,7 +3,12 @@[m
+         <ul>[m
+             <li><a href="{{ base_url }}">Homepage</a></li>[m
+             <li><a href="{{ base_url }}/index.php/products">Products</a></li>[m
+[31m-            <li><a href="{{ base_url }}/index.php/login">Login</a></li>[m
+[32m+[m[32m            {% if logged_in == false %}[m
+[32m+[m[32m                <li><a href="{{ base_url }}/index.php/login">Login</a></li>[m
+[32m+[m[32m                <li><a href="{{ base_url }}/index.php/register">Register</a></li>[m
+[32m+[m[32m            {% else %}[m
+[32m+[m[32m                <li><a href="{{ base_url }}/index.php/logout">Logout</a></li>[m
+[32m+[m[32m            {% endif %}[m
+         </ul>[m
+     </div>[m
+ </div>[m
+\ No newline at end of file[m
+[1mdiff --git a/templates/login.html.twig b/templates/login.html.twig[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/templates/products.html.twig b/templates/products.html.twig[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/css/default.css b/web/assets/css/default.css[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mindex 1f1f17b..a7daf7d[m
+[1m--- a/web/assets/css/default.css[m
+[1m+++ b/web/assets/css/default.css[m
+[36m@@ -587,7 +587,41 @@[m [mhr {[m
+ 	text-align: center;[m
+ }[m
+ [m
+[32m+[m[32m.form-control {[m[41m[m
+[32m+[m	[32mmargin-left: 25px;[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+ .input-group {[m
+[31m-	margin-top: 15px;[m
+[32m+[m	[32mwidth: 28%;[m[41m[m
+[32m+[m	[32mmargin: auto;[m[41m[m
+[32m+[m	[32mmargin-top: 20px;[m[41m[m
+ 	margin-bottom: 15px;[m
+[32m+[m	[32mtext-align: left;[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m.input-group input {[m[41m[m
+[32m+[m	[32mfloat: right;[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[32m.info, .success, .warning, .error, .validation {[m[41m[m
+[32m+[m	[32mborder: 1px solid;[m[41m[m
+[32m+[m	[32mmargin: 10px 0px;[m[41m[m
+[32m+[m	[32mpadding:15px 10px 15px 50px;[m[41m[m
+[32m+[m	[32mbackground-repeat: no-repeat;[m[41m[m
+[32m+[m	[32mbackground-position: 10px center;[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[32m.info {[m[41m[m
+[32m+[m	[32mcolor: #00529B;[m[41m[m
+[32m+[m	[32mbackground-color: #BDE5F8;[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[32m.success {[m[41m[m
+[32m+[m	[32mcolor: #4F8A10;[m[41m[m
+[32m+[m	[32mbackground-color: #DFF2BF;[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[32m.warning {[m[41m[m
+[32m+[m	[32mcolor: #9F6000;[m[41m[m
+[32m+[m	[32mbackground-color: #FEEFB3;[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[32m.error {[m[41m[m
+[32m+[m	[32mcolor: #D8000C;[m[41m[m
+[32m+[m	[32mbackground-color: #FFBABA;[m[41m[m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/web/assets/css/fonts.css b/web/assets/css/fonts.css[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/FontAwesome.otf b/web/assets/fonts/FontAwesome.otf[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-social-webfont.eot b/web/assets/fonts/fontawesome-social-webfont.eot[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-social-webfont.svg b/web/assets/fonts/fontawesome-social-webfont.svg[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-social-webfont.ttf b/web/assets/fonts/fontawesome-social-webfont.ttf[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-social-webfont.woff b/web/assets/fonts/fontawesome-social-webfont.woff[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-webfont.eot b/web/assets/fonts/fontawesome-webfont.eot[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-webfont.svg b/web/assets/fonts/fontawesome-webfont.svg[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-webfont.ttf b/web/assets/fonts/fontawesome-webfont.ttf[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/assets/fonts/fontawesome-webfont.woff b/web/assets/fonts/fontawesome-webfont.woff[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/web/index.php b/web/index.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m

@@ -30,6 +30,11 @@ class Product {
     protected $phone_no;
 
     /**
+     * The id as stored in the database of the product.
+     */
+    protected $id;
+
+    /**
      * Product constructor.
      *
      * @param $title
@@ -54,7 +59,7 @@ class Product {
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':phone_no', $this->phone_no);
 
-        $stmt->execute();
+        return $stmt->execute();
     }
 
     /**
@@ -70,6 +75,13 @@ class Product {
         }
 
         return $query->fetchAll();
+    }
+
+    public static function deleteProduct($title) {
+        $query = "DELETE FROM products WHERE title =  :title";
+        $stmt = DatabaseConnection::$connection->prepare($query);
+        $stmt->bindParam(':title', $title);
+        return $stmt->execute();
     }
 
 

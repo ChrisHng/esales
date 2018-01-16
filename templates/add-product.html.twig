@@ -1,0 +1,38 @@
+<div id="page" class="container">
+
+    {% if logged_in == false%}
+        <div class="error"><h3>Please log in order to add products!</h3></div>
+    {% else %}
+
+        {% if result == true %}
+            <div class="success"><h3>The product has been added!</h3></div>
+        {% else %}
+            <form class="form-signin" method="POST">
+                <h2 class="form-signin-heading">Add a product</h2>
+
+                <div class="input-group">
+                    <label for="inputPassword" class="sr-only">Title</label>
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Title" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="description" class="sr-only">Description</label>
+                    <textarea name="description"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="price" class="sr-only">Price</label>
+                    <input type="number" name="price" id="price" class="form-control" placeholder="Price" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone" class="sr-only">Phone No.</label>
+                    <input type="tel" name="phone" id="phone" class="form-control" placeholder="Phone" required>
+                </div>
+
+                <button class="button" type="submit">Add</button>
+            </form>
+        {% endif %}
+
+    {% endif %}
+</div>

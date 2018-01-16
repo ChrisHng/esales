@@ -2,15 +2,16 @@
     <div id="portfolio" class="container">
 
         {% for product in products %}
-        <div id="column{{ (loop.index % 4) + 1 }}">
+        <div id="column{{ 4 - (loop.index % 4) }}">
             <div class="title">
                 <h2>{{ product.title }}</h2>
             </div>
             <p>{{ product.description }}</p>
             <p>{{ product.price }} $</p>
             <div class="icon icon-plus-sign button">{{ product.phone_no }}</div>
-
         </div>
+
+
 
         {% endfor %}
     </div>

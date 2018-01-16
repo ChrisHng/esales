@@ -1,0 +1,22 @@
+<div id="portfolio-wrapper">
+    <div class="container">
+    <ul class="products-list">
+        {% if result %}
+            <div class="success"><h3>Product {{ deleted_title }} has been removed!</h3></div>
+        {% else %}
+            {% for product in products %}
+                <li>
+                    <div class="title">
+                        <h4>{{ product.title }}</h4>
+                    </div>
+
+                    {% if logged_in %}
+                        <a href="{{ base_url }}/index.php/delete/{{ product.title }}"><button type="submit">Delete</button></a>
+                    {% endif %}
+                </li>
+
+            {% endfor %}
+        {% endif %}
+    </ul>
+    </div>
+</div>

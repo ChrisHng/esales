@@ -472,6 +472,8 @@ hr {
 	{
 		width: 282px;
 		margin-bottom: 45px;
+
+
 	}
 	
 	#column1,
@@ -587,7 +589,46 @@ hr {
 	text-align: center;
 }
 
-.input-group {
-	margin-top: 15px;
-	margin-bottom: 15px;
+.form-control {
+	margin-left: 25px;
 }
+
+.input-group {
+	width: 28%;
+	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 15px;
+	text-align: left;
+}
+
+.input-group input, textarea {
+	float: right;
+}
+.info, .success, .warning, .error, .validation {
+	border: 1px solid;
+	margin: 10px 0px;
+	padding:15px 10px 15px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+}
+.info {
+	color: #00529B;
+	background-color: #BDE5F8;
+}
+.success {
+	color: #4F8A10;
+	background-color: #DFF2BF;
+}
+.warning {
+	color: #9F6000;
+	background-color: #FEEFB3;
+}
+.error {
+	color: #D8000C;
+	background-color: #FFBABA;
+}
+
+#portfolio p {
+	padding-right: 15px;
+}
+

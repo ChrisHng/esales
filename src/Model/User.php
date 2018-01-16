@@ -20,6 +20,11 @@ class User {
     protected $pwd;
 
     /**
+     * The property of an user to be admin.
+     */
+    protected $isAdmin;
+
+    /**
      * User constructor.
      *
      * @param $username
@@ -35,7 +40,7 @@ class User {
      * Adds the entry to the database;
      */
     public function add() {
-        $stmt = DatabaseConnection::$connection->prepare("INSERT INTO users (username, password) VALUES (:username, :password");
+        $stmt = DatabaseConnection::$connection->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':password', $this->pwd);
 
